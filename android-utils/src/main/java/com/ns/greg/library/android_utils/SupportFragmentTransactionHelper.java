@@ -1,19 +1,19 @@
 package com.ns.greg.library.android_utils;
 
 import android.annotation.SuppressLint;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.support.annotation.AnimatorRes;
+import android.support.annotation.AnimRes;
 import android.support.annotation.IdRes;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 
 /**
  * @author Gregory
  * @since 2017/3/9
  */
-public class FragmentTransactionHelper {
+public class SupportFragmentTransactionHelper {
 
-  private FragmentTransactionHelper() {
+  private SupportFragmentTransactionHelper() {
     throw new AssertionError("No instance");
   }
 
@@ -25,6 +25,10 @@ public class FragmentTransactionHelper {
   public static <T extends Fragment> T getFragment(FragmentManager fragmentManager,
       Class<T> fragmentClass) {
     return (T) fragmentManager.findFragmentByTag(fragmentClass.getName());
+  }
+
+  public static Fragment getFragment(FragmentManager fragmentManager, Fragment fragment) {
+    return fragmentManager.findFragmentByTag(fragment.getClass().getName());
   }
 
   public static final class Builder {
@@ -40,7 +44,7 @@ public class FragmentTransactionHelper {
       this.fragmentTransaction = fragmentManager.beginTransaction();
     }
 
-    public Builder setCustomAnimations(@AnimatorRes int enter, @AnimatorRes int exit) {
+    public Builder setCustomAnimations(@AnimRes int enter, @AnimRes int exit) {
       fragmentTransaction.setCustomAnimations(enter, exit);
 
       return this;
@@ -61,6 +65,44 @@ public class FragmentTransactionHelper {
           fragmentTransaction.add(rootResId, fragment, fragmentClass.getName());
           fragmentTransaction.show(fragment);
         }
+      }
+
+      return this;
+    }
+
+    public Builder addFragment(Fragment fragment) {
+      if (getFragment(fragmentManager, fragment) == null) {
+        fragmentTransaction.add(rootResId, fragment, fragment.getClass().getName());
+        fragmentTransaction.show(fragment);
+      }
+
+      return this;
+    }
+
+    public <T extends Fragment> Builder replaceFragment(Class<T> fragmentClass) {
+      if (getFragment(fragmentManager, fragmentClass) != null) {
+        Fragment fragment = null;
+        try {
+          fragment = fragmentClass.newInstance();
+        } catch (InstantiationException e) {
+          e.printStackTrace();
+        } catch (IllegalAccessException e) {
+          e.printStackTrace();
+        }
+
+        if (fragment != null) {
+          fragmentTransaction.replace(rootResId, fragment, fragmentClass.getName());
+          fragmentTransaction.show(fragment);
+        }
+      }
+
+      return this;
+    }
+
+    public Builder replaceFragment(Fragment fragment) {
+      if (getFragment(fragmentManager, fragment) != null) {
+        fragmentTransaction.replace(rootResId, fragment, fragment.getClass().getName());
+        fragmentTransaction.show(fragment);
       }
 
       return this;

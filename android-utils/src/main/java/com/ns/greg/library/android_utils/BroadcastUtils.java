@@ -10,7 +10,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import java.util.ArrayList;
 
 /**
- * Created by Gregory on 2017/2/14.
+ * @author Gregory
+ * @since 2017/2/14
  */
 public class BroadcastUtils {
 
@@ -111,7 +112,7 @@ public class BroadcastUtils {
       return this;
     }
 
-    public void broacast(Context context) {
+    public void broadcast(Context context) {
       LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 

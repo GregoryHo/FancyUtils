@@ -6,15 +6,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
- * Created by Gregory on 2016/3/24.
+ * @author Gregory
+ * @since 2016/3/24
  */
 public class ViewUtils {
 
@@ -53,7 +59,6 @@ public class ViewUtils {
     view.setDrawingCacheEnabled(true);
     view.setDrawingCacheQuality(quality);
     view.buildDrawingCache();
-
     if (view.getDrawingCache() == null) {
       return null;
     }
@@ -61,7 +66,6 @@ public class ViewUtils {
     Bitmap snapshot = Bitmap.createBitmap(view.getDrawingCache());
     view.setDrawingCacheEnabled(false);
     view.destroyDrawingCache();
-
     return snapshot;
   }
 
@@ -73,6 +77,46 @@ public class ViewUtils {
     return LayoutInflater.from(context).inflate(layoutId, viewGroup, attachToRoot);
   }
 
+  public static String getTextViewString(@NonNull TextView textView) {
+    try {
+      return textView.getText().toString();
+    } catch (NullPointerException e) {
+      return "";
+    }
+  }
+
+  public static String getTextViewString(@NonNull TextView textView, String defaultValue) {
+    try {
+      return textView.getText().toString();
+    } catch (NullPointerException e) {
+      return defaultValue;
+    }
+  }
+
+  public static String getEditTextString(@NonNull EditText editText) {
+    try {
+      return editText.getText().toString();
+    } catch (NullPointerException e) {
+      return "";
+    }
+  }
+
+  public static TextView cast2TextView(ViewGroup parent, @IdRes int resId) {
+    return (TextView) parent.findViewById(resId);
+  }
+
+  public static ImageView cast2ImageView(ViewGroup parent, @IdRes int resId) {
+    return (ImageView) parent.findViewById(resId);
+  }
+
+  public static int getRelativeTop(View view) {
+    if (view.getParent() == view.getRootView()) {
+      return view.getTop();
+    }
+
+    return view.getTop() + getRelativeTop((View) view.getParent());
+  }
+
   /**
    * Sets Evaluator in ValueAnimator
    */
@@ -82,13 +126,46 @@ public class ViewUtils {
     return valueAnimator;
   }
 
+  public static DisplayMetrics getDisplayMetrics(Context context) {
+    DisplayMetrics displayMetrics = new DisplayMetrics();
+    WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+    if (windowManager != null) {
+      windowManager.getDefaultDisplay().getRealMetrics(displayMetrics);
+    }
+
+    return displayMetrics;
+  }
+
   /**
-   * Returns screen Metrics
+   * Returns the screen width.
+   *
+   * @param context application context
+   * @return width size in pixel
    */
-  public static DisplayMetrics getMetrics(WindowManager windowManager) {
-    DisplayMetrics displaymetrics = new DisplayMetrics();
-    windowManager.getDefaultDisplay().getMetrics(displaymetrics);
-    return displaymetrics;
+  public static int getWidth(Context context) {
+    DisplayMetrics displayMetrics = new DisplayMetrics();
+    WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+    if (windowManager != null) {
+      windowManager.getDefaultDisplay().getRealMetrics(displayMetrics);
+    }
+
+    return displayMetrics.widthPixels;
+  }
+
+  /**
+   * Returns the screen height.
+   *
+   * @param context application context
+   * @return height size in pixel
+   */
+  public static int getHeight(Context context) {
+    DisplayMetrics displayMetrics = new DisplayMetrics();
+    WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+    if (windowManager != null) {
+      windowManager.getDefaultDisplay().getRealMetrics(displayMetrics);
+    }
+
+    return displayMetrics.heightPixels;
   }
 
   /**
@@ -120,35 +197,13 @@ public class ViewUtils {
   }
 
   /**
-   * Returns the screen width.
-   *
-   * @param context application context
-   * @return width size in pixel
-   */
-  public static int getWidth(Context context) {
-    DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-    return metrics.widthPixels;
-  }
-
-  /**
-   * Returns the screen height.
-   *
-   * @param context application context
-   * @return height size in pixel
-   */
-  public static int getHeight(Context context) {
-    DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-    return metrics.heightPixels;
-  }
-
-  /**
    * Coverts px to dp.
    *
    * @param px pixel
    * @param context application context
    * @return dp
    */
-  public static int convertPixelToDp(float px, Context context) {
+  public static int convertPixel2Dp(float px, Context context) {
     return (int) (px / getDensity(context) + 0.5f);
   }
 
@@ -159,7 +214,7 @@ public class ViewUtils {
    * @param context application context
    * @return pixel
    */
-  public static int convertDpToPixel(float dp, Context context) {
+  public static int convertDp2Pixel(float dp, Context context) {
     return (int) (dp * getDensity(context) + 0.5f);
   }
 
@@ -170,7 +225,7 @@ public class ViewUtils {
    * @param context application context
    * @return sp
    */
-  public static int convertPixelToSp(float px, Context context) {
+  public static int convertPixel2Sp(float px, Context context) {
     return (int) (px / getScaledDensity(context) + 0.5f);
   }
 
@@ -181,7 +236,7 @@ public class ViewUtils {
    * @param context application context
    * @return dp
    */
-  public static int convertSpToPixel(float dp, Context context) {
+  public static int convertSp2Pixel(float dp, Context context) {
     return (int) (dp * getScaledDensity(context) + 0.5d);
   }
 
