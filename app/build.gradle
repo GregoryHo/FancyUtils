@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-  compileSdkVersion 26
-  buildToolsVersion "26.0.2"
+  compileSdkVersion buildVersions.compileSdk
+  buildToolsVersion buildVersions.buildTools
   defaultConfig {
     applicationId "com.ns.greg.fancyutils"
-    minSdkVersion 17
-    targetSdkVersion 26
+    minSdkVersion buildVersions.minSdk
+    targetSdkVersion buildVersions.targetSdk
     versionCode 1
     versionName "1.0"
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -21,7 +21,7 @@ android {
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
-  implementation 'com.android.support:appcompat-v7:26.1.0'
+  implementation deps.androidSupport.appCompat
   androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
     exclude group: 'com.android.support', module: 'support-annotations'
   })

@@ -1,0 +1,46 @@
+// build versions defined
+def buildVersions = [:]
+buildVersions.minSdk = 17
+buildVersions.targetSdk = 26
+buildVersions.compileSdk = 26
+buildVersions.buildTools = "27.0.3"
+buildVersions.sourceCompatibility = JavaVersion.VERSION_1_8
+buildVersions.targetCompatibility = JavaVersion.VERSION_1_8
+ext.buildVersions = buildVersions
+/**
+ * Shared file between builds so that they can all use the same dependencies and
+ * maven repositories.
+ **/
+ext.deps = [:]
+// dependencies versions defined
+def versions = [:]
+versions.androidGradlePlugin = "3.1.4"
+versions.googleGradlePlugin = "3.1.0"
+versions.supportLibrary = "26.1.0"
+versions.gson = "2.8.1"
+// dependencies defined
+def deps = [:]
+// Gradle
+def gradle = [:]
+gradle.android = "com.android.tools.build:gradle:$versions.androidGradlePlugin"
+gradle.google = "com.google.gms:google-services:$versions.googleGradlePlugin"
+deps.gradle = gradle
+// Android support
+def androidSupport = [:]
+androidSupport.appCompat = "com.android.support:appcompat-v7:$versions.supportLibrary"
+androidSupport.annotation =
+    "com.android.support:support-annotations:$versions.supportLibraryVersion"
+deps.androidSupport = androidSupport
+// Google
+def google = [:]
+google.gson = "com.google.code.gson:gson:$versions.gson"
+deps.google = google
+ext.deps = deps
+
+static def addRepos(RepositoryHandler handler) {
+  handler.mavenCentral()
+  handler.google()
+  handler.jcenter()
+}
+
+ext.addRepos = this.&addRepos
